@@ -17,23 +17,53 @@ app.post("/",async(req,res)=>{
 
 app.put("/:id",async(req,res)=>{
     const id=req.params.id;
+    console.log(id)
     const newAge =req.body.age;
     const updatedUser =await prisma.user.update({
-        where:{id:parseInt(id)},
+        where:{id:String(id)},
         data:{ age: newAge},
     });
     res.json(updatedUser);
+   
 })
 app.delete("/:id",async(req,res)=>{
     const id=req.params.id;
     const deletedUser =await prisma.user.delete({
-        where:{id:parseInt(id)},
+        where:{id:String(id)},
     });
     res.json(deletedUser);
 })
 
+
+app.get("/house",async(req,res)=>{
+    const allhouse= await prisma.house.findMany({
+        include:{
+            owner:true,
+            builtBy:true,
+        }
+    });
+    res.json(allhouse);
+})
+
+app.get("/house/:id",async(req,res)=>{
+    const id=req.params.id;
+    const allhouse= await prisma.house.findMany({
+        where:{id,},
+        include:{
+            owner:true,
+            builtBy:true,
+        }
+    });
+    res.json(allhouse);
+})
+
 app.post("/house",async(req,res)=>{
     const newHouse =await prisma.house.create({data:req.body});
+    res.json(newHouse);
+})
+
+app.post("/house/many",async(req,res)=>{
+    const newHouse =await prisma.house.createMany({data:req.body});
     res.json(newHouse);
 })
 
