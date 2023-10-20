@@ -8,6 +8,7 @@ const prisma=new PrismaClient();
 app.use(express.json());
 
 
+
 //middlewares
 app.use("/users/",usersRoute)
 app.use("/houses/",houseRoute)
@@ -19,6 +20,11 @@ app.all("*",(req,res,next)=>{
     err.statusCode=401;
     next(err)
 })
+//error handling with higher order component
+// app.use(function(err, req, res, next) {
+//     console.log(err);
+//     res.status (500).send({ message: 'Something went wrong' });
+//     });
 app.use((error, req, res, next) => {
     error.statusCode = error.statusCode || 500;
     error.status =error.status || 'error';
