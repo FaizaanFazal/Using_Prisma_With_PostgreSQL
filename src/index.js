@@ -3,7 +3,6 @@ import usersRoute from './routes/usersRoute.js'
 import houseRoute from './routes/houseRoute.js'
 import { PrismaClient } from '@prisma/client';
 import swaggerDocs from "./utils/swagger.js";
-// import logger from "./utils/logger.js";
 
 const app = express();
 const prisma = new PrismaClient();
