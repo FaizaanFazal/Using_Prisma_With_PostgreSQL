@@ -32,3 +32,10 @@ model House {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+model Accounts {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  email     String   @unique
+  password  String?
+}
