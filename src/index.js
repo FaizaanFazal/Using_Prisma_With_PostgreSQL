@@ -4,6 +4,7 @@ import houseRoute from './routes/houseRoute.js'
 import postRoute from './routes/postRoute.js'
 import { PrismaClient } from '@prisma/client';
 import swaggerDocs from "./utils/swagger.js";
+import { authenticateToken } from './models/authModel.js';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -13,7 +14,7 @@ app.use(express.json());
 //middlewares
 app.use("/users/", usersRoute)
 app.use("/houses/", houseRoute)
-app.use("/posts/", postRoute)
+app.use("/posts/",authenticateToken, postRoute)
 
 
 swaggerDocs(app, port);
