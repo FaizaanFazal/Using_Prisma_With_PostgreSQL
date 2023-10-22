@@ -7,16 +7,15 @@ export const generateAccestoken = (user) => {
 }
 
 
-export const authenticateToken=(req, res, next)=>{
+export const authenticateToken=async(req, res, next)=>{
     const token = req.headers['authorization']
     console.log(req.headers)
 
-    if (token == null) return res.sendStatus(401)
+    if (token == null) return 401;
     console.log("verifying")
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-      console.log(err)
-      if (err) return res.sendStatus(403)
-      req.user = user
-      next()
+      if (err) return 403;
+      req.user = user;
+      return user;
     })
   }

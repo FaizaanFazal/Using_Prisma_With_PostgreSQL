@@ -8,6 +8,7 @@ import swaggerDocs from "./utils/swagger.js";
 import { authenticateToken } from './models/authModel.js';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
+import { protectedRoutes } from './utils/protectedroutes.js';
 
 
 const app = express();
@@ -18,7 +19,27 @@ var csrfProtection = csurf({ cookie: true });
 app.use(express.json());
 app.use(cookieParser());
 
-//middlewares
+
+const isProtectedRouteMiddleware =async (req, res, next) => {
+    console.log(req.method)
+    const protectedPathData = protectedRoutes.find((route) => route.path === req.path);
+  if (protectedPathData) {
+    const authenticatedUser =await authenticateToken(req);
+    if (authenticatedUser !== 403 || authenticatedUser !== 401) {
+        if (protectedPathData.usecsrf) {
+            csrfProtection(req, res, next)
+        } else {
+            next();
+        }
+    } else {
+        res.status(authenticatedUser);
+        res.end();
+    }
+  } else {
+    next();
+  }
+};
+app.use(isProtectedRouteMiddleware)
 app.get('/', csrfProtection, function(req, res) {
     // Pass the Csrf Token
     res.cookie('XSRF-TOKEN', req.csrfToken());
@@ -26,7 +47,7 @@ app.get('/', csrfProtection, function(req, res) {
   });
 app.use("/users/", usersRoute)
 app.use("/houses/", houseRoute)
-app.use("/posts/",csrfProtection,authenticateToken, postRoute)
+app.use("/posts/",csrfProtection, postRoute)
 app.use("/auth/", authRoute)
 
 swaggerDocs(app, port);
