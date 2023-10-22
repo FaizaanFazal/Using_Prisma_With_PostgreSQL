@@ -25,8 +25,11 @@ const isProtectedRouteMiddleware =async (req, res, next) => {
     const protectedPathData = protectedRoutes.find((route) => route.path === req.path);
   if (protectedPathData) {
     const authenticatedUser =await authenticateToken(req);
-    if (authenticatedUser !== 403 || authenticatedUser !== 401) {
+    if (authenticatedUser !== 403 && authenticatedUser !== 401) {
+        req.user=authenticatedUser;
+        console.log("asdas",authenticatedUser)
         if (protectedPathData.usecsrf) {
+            console.log("here")
             csrfProtection(req, res, next)
         } else {
             next();
@@ -42,12 +45,12 @@ const isProtectedRouteMiddleware =async (req, res, next) => {
 app.use(isProtectedRouteMiddleware)
 app.get('/', csrfProtection, function(req, res) {
     // Pass the Csrf Token
-    res.cookie('XSRF-TOKEN', req.csrfToken());
+    res.cookie('x-csrf-token', req.csrfToken());
     res.json({});
   });
-app.use("/users/", usersRoute)
+app.use("/users/",csrfProtection, usersRoute)
 app.use("/houses/", houseRoute)
-app.use("/posts/",csrfProtection, postRoute)
+app.use("/posts/", postRoute)
 app.use("/auth/", authRoute)
 
 swaggerDocs(app, port);

@@ -12,6 +12,5 @@ const posts = [
   ]
 
 export const getPost = async (req, res, next) => {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
     res.json(posts.filter(post => post.email === req.user.email))
 }
