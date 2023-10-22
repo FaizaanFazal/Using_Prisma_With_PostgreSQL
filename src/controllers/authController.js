@@ -30,6 +30,8 @@ export const login = async (req, res, next) => {
             //storing refresh token on server for now
             refreshTokens.push(refreshToken)
             //sending response with both tokens
+            res.cookie('CSRF',{ httpOnly: true, expires: 0 });
+            //for eas of practice sending in response
             res.json({ accessToken: accessToken, refreshToken: refreshToken })
         }
         else {
