@@ -1,5 +1,5 @@
 import express from "express";
-import { login, register } from "../controllers/authController.js";
+import { getToken, login, logout, register } from "../controllers/authController.js";
 const router = express.Router();
 
 const use = fn => (req, res, next) =>Promise. resolve(fn (req, res, next)).catch(next);
@@ -127,6 +127,7 @@ router.post("/register",use(register) )
  *                  description: stack trace for detailed checking
  */
 router.post("/login",use(login) )
-
+router.post("/logout",use(logout))
+router.post("/token",use(getToken))
 
 export default router

@@ -1,23 +1,18 @@
 import express from 'express';
-import usersRoute from './routes/usersRoute.js'
-import houseRoute from './routes/houseRoute.js'
-import postRoute from './routes/postRoute.js'
+import authRoute from './routes/authRoutes.js'
 import { PrismaClient } from '@prisma/client';
 import swaggerDocs from "./utils/swagger.js";
 
 const app = express();
 const prisma = new PrismaClient();
-const port=3001
+const port=3002
 app.use(express.json());
 
 //middlewares
-app.use("/users/", usersRoute)
-app.use("/houses/", houseRoute)
-app.use("/posts/", postRoute)
 
+app.use("/auth/", authRoute)
 
 swaggerDocs(app, port);
-
 //Global Error handling with middlewares
 app.all("*", (req, res, next) => {
     const err = new Error(`cant find ${req.originalUrl} on server`)
@@ -37,6 +32,6 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(port, () => {
-    console.log(`App running at http://localhost:${port}`);
+    console.log(`Auth server running at http://localhost:${port}`);
     
 })
